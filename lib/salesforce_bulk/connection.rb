@@ -81,7 +81,12 @@ module SalesforceBulk
     end
 
     def parse_instance()
-      @server_url =~ /https:\/\/([a-z]{2,2}[0-9]{1,2})(-api)?/
+      unless @server_url =~ /https:\/\/([a-z]{2,2}[0-9]{1,2})(-api)?/
+        @server_url =~ /https:\/\/[^.]*\.([a-z]{2,2}[0-9]{1,2}).my.salesforce.com/
+      end
+      if $~.nil?
+        raise "Unable to parse instance from serverUrl: #{@server_url}"
+      end
       @instance = $~.captures[0]
     end
 
